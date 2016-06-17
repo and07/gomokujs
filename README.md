@@ -1,0 +1,2 @@
+# gomokujs
+gomoku javascript 
