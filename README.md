@@ -1,2 +1,2 @@
-# gomokujs
-gomoku javascript 
+# gomoku
+gomoku javascript game

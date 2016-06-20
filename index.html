@@ -1,0 +1,93 @@
+<!DOCTYPE html> 
+<html>
+    <head>
+        <title>Gomoku</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script type="text/javascript" src="game.js"></script>
+         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    </head>
+    <body>
+		<h1>Gomoku</h1>
+		<div>
+        <button id="js_play">Play</button>
+		<button id="js_hint">Hint</button>
+        <button id="js_autoplay">Autoplay</button>
+        <button id="js_table_res">Result</button><br>
+		</div>
+		<br>
+		<div>
+			<canvas width="1000" height="500" id="game"></canvas> 
+		</div>
+    </body>
+<script>
+/*
+На главной странице меню из 2х пунктов:
+- играть
+- таблица результатов
+
+Игра:
+
+Есть доска 20х20 клеток.
+Игрок ставит на поле крестики, компьютер нолики.
+Цель - выставить свои пять знаков в ряд (по горизонтали, вертикали или диагонали).
+Первый ход делает игрок.
+Если игрок победил, вычисляется время игры исходя из времени первого и последнего ходов.
+Появляется предложение ввести имя и, если игрок не отказался, время заносится в таблицу результатов.
+Таблица результатов должна храниться в БД.
+АИ компьютера максимально простой - напр. просто ставить нолик в ряду, после того, как игрок выстроил три крестика в ряд.
+
+Таблица результатов:
+
+Таблица пар имя, время игры
+
+Требования к выполнению задания:
+- ООП (можно использовать фреймворк)
+- Логика на PHP
+- Интерфейс на jquery/extjs
+- Обмен данными используя подход ajax
+*/
+</script>
+    
+    
+    
+ <script>
+	"use strict";
+	$('#js_table_res').on('click', function(){
+		var tab = '<table style="border-collapse: collapse;border: 1px solid white;">';
+		tab += '<tr><th style="border: 1px solid white;">name</th><th style="border: 1px solid white;">time</th></tr>';
+		var res = Gomoku.result;
+		for(var i in res){  
+			tab += '<tr><td style="border: 1px solid white;">'+res[i].name+'</td><td style="border: 1px solid white;">'+res[i].time[0]+' day/s '+res[i].time[1]+' hour/s '+res[i].time[2]+' minute/s '+res[i].time[3]+' second/s'+'</td></tr>';
+		}
+		tab += '</table>';
+		if(res.length){
+			_alert(tab);
+		}else{
+			_alert('Not data');
+		}
+
+	});
+ 	
+ 	$('#js_autoplay').on('click', function(){
+ 		Gomoku.initBoard();
+ 		Gomoku.setAutoplay();
+ 	});
+ 
+	$('#js_play').on('click',function(){
+		Gomoku.initBoard();
+	});
+	$('#js_hint').on('click',function(){
+		Gomoku.showHint();
+	});	
+
+	window.onload=function(){
+		
+		//document.getElementById("game").style.width=AmountX*Size+"px";
+		//document.getElementById("game").style.height=AmountY*Size+"px";
+		
+	
+	}
+ 
+</script>
+
+</html>
