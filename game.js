@@ -87,23 +87,33 @@ var Gomoku = function(){
     var winningMove=9999999;
     var openFour   =8888888;
     var twoThrees  =7777777;
+    var cell = 20;
 
+    function setSize(val){
+        Size = parseInt(val);
+        if(val == 3){
+            count2win = 3;
+        }else{
+            count2win = 5;
+        }
+    }
 
     function initBoard(){
+
         startDate = undefined;
-        canvas=document.getElementById("game");
+        canvas = document.getElementById("game");
         canvas.width = canvas.width;
         init();
         game = canvas.getContext("2d");
         
         for(var i=0;i<Size+1;i++){
-            game.moveTo(Size*i, 0);
-            game.lineTo(Size*i, Size*Size);
+            game.moveTo(cell*i, 0);
+            game.lineTo(cell*i, cell*Size);
         }
         
         for(var i=0;i<Size+1;i++){
-            game.moveTo(0, Size*i);
-            game.lineTo(Size*Size, Size*i); 
+            game.moveTo(0, cell*i);
+            game.lineTo(cell*Size, cell*i); 
         }
         
         game.strokeStyle="#000";
@@ -164,8 +174,8 @@ var Gomoku = function(){
         var x_px = xy[0];
         var y_px = xy[1];
     
-        var x=Math.floor(x_px/Size);
-        var y=Math.floor(y_px/Size);
+        var x=Math.floor(x_px/cell);
+        var y=Math.floor(y_px/cell);
         
         var xy_px=Array(2);
         xy_px[0]=x;
@@ -194,8 +204,8 @@ var Gomoku = function(){
         
         game.strokeStyle = 'red';
         game.beginPath();      
-        game.arc(Size/2+Size*x, Size/2+Size*y, Size*4/11, 0, Math.PI*2, true);            
-        game.lineWidth = Size/5;
+        game.arc(cell/2+cell*x, cell/2+cell*y, cell*4/11, 0, Math.PI*2, true);            
+        game.lineWidth = cell/5;
         game.stroke();
         
     }
@@ -205,13 +215,13 @@ var Gomoku = function(){
         game.strokeStyle = color;
         game.beginPath();
         
-        game.moveTo(Size*x+4, Size*y+4);
-        game.lineTo(Size*(x+1)-4, Size*(y+1)-4);
+        game.moveTo(cell*x+4, cell*y+4);
+        game.lineTo(cell*(x+1)-4, cell*(y+1)-4);
         
-        game.moveTo(Size*(x+1)-4, Size*y+4);
-        game.lineTo(Size*(x)+4, Size*(y+1)-4);
+        game.moveTo(cell*(x+1)-4, cell*y+4);
+        game.lineTo(cell*(x)+4, cell*(y+1)-4);
         
-        game.lineWidth = Size/5;
+        game.lineWidth = cell/5;
         game.stroke();
     }
 
@@ -630,6 +640,7 @@ var Gomoku = function(){
  		setAutoplay : setAutoplay,
         showHint : showHint,
         result : res,
+        setSize : setSize,
     }
 }();
 

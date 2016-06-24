@@ -9,6 +9,11 @@
     <body>
 		<h1>Gomoku</h1>
 		<div>
+		<select name='size'>
+			<option value="20">20</option>
+			<option value="15">15</option>
+			<option value="3">3</option>
+		</select>	
         <button id="js_play">Play</button>
 		<button id="js_hint">Hint</button>
         <button id="js_autoplay">Autoplay</button>
@@ -78,7 +83,11 @@
 	});
 	$('#js_hint').on('click',function(){
 		Gomoku.showHint();
-	});	
+	});
+
+	$('[name="size"]').on('change',function(){
+		Gomoku.setSize(this.value);
+	});
 
 	window.onload=function(){
 		
