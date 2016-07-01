@@ -118,7 +118,8 @@ var Gomoku = function(){
         
         game.strokeStyle="#000";
         game.stroke();
-        canvas.addEventListener("click", canvasClick, false); 	
+        canvas.addEventListener("click", canvasClick, false);
+        c = 1; 	
     }
 
     function init(){
@@ -299,24 +300,28 @@ var Gomoku = function(){
                 requestGameLogic(param)
 
             }else{
-                    
+                if(!gameOver){
                     if(c==1){
                         drawCross(x, y);
                         f[x][y]=1;
-                        if(bot && !gameOver){
+                        if(bot){
                             machineMove(x, y);
-                        }
+                        }                   
                     }else{
                         drawCicle(x, y);
                         f[x][y]=-1;
-                        
                     }
+
+                    if (drawPos) {gameOver = 1;alert("It\'s a draw!");return}
                     if(checkWin(c?1:-1)){
                         var win = c?'Cross':'Cicle';
                         WinMessage(win);
                         return;
                     }
-                    c = c == 1 ? 0 : 1;
+                    c = (c == 1) ? 0 : 1;
+                }else{
+                    alert("GameOver");return
+                }
             }
             if(!startDate) startDate = new Date();
         /**/
@@ -396,54 +401,54 @@ var Gomoku = function(){
     function winningPos(i,j,mySq) {
         var test3=0;
         var test4=0;
-
+        var limit = count2win;
         var L=1,m,m1,m2,side1,side2;
         m=1; while (j+m<Size  && f[i][j+m]==mySq) {L++; m++} m1=m;
         m=1; while (j-m>=0 && f[i][j-m]==mySq) {L++; m++} m2=m;   
-        if (L>4) { return winningMove; }
+        if (L>(limit-1)) { return winningMove; }
         side1=(j+m1<Size && f[i][j+m1]==0);
         side2=(j-m2>=0 && f[i][j-m2]==0);
 
-        if (L==4 && (side1 || side2)) test3++;
+        if (L==(limit-1) && (side1 || side2)) test3++;
         if (side1 && side2) {
-            if (L==4) test4=1;
-            if (L==3) test3++;
+            if (L==(limit-1)) test4=1;
+            if (L==(limit-2)) test3++;
         }
 
         L=1;
         m=1; while (i+m<Size  && f[i+m][j]==mySq) {L++; m++} m1=m;
         m=1; while (i-m>=0 && f[i-m][j]==mySq) {L++; m++} m2=m;   
-        if (L>4) { return winningMove; }
+        if (L>(limit-1)) { return winningMove; }
         side1=(i+m1<Size && f[i+m1][j]==0);
         side2=(i-m2>=0 && f[i-m2][j]==0);
-        if (L==4 && (side1 || side2)) test3++;
+        if (L==(limit-1) && (side1 || side2)) test3++;
         if (side1 && side2) {
-            if (L==4) test4=1;
-            if (L==3) test3++;
+            if (L==(limit-1)) test4=1;
+            if (L==(limit-2)) test3++;
         }
 
         L=1;
         m=1; while (i+m<Size && j+m<Size && f[i+m][j+m]==mySq) {L++; m++} m1=m;
         m=1; while (i-m>=0 && j-m>=0 && f[i-m][j-m]==mySq) {L++; m++} m2=m;   
-        if (L>4) { return winningMove; }
+        if (L>(limit-1)) { return winningMove; }
         side1=(i+m1<Size && j+m1<Size && f[i+m1][j+m1]==0);
         side2=(i-m2>=0 && j-m2>=0 && f[i-m2][j-m2]==0);
-        if (L==4 && (side1 || side2)) test3++;
+        if (L==(limit-1) && (side1 || side2)) test3++;
         if (side1 && side2) {
-            if (L==4) test4=1;
-            if (L==3) test3++;
+            if (L==(limit-1)) test4=1;
+            if (L==(limit-2)) test3++;
         }
 
         L=1;
         m=1; while (i+m<Size  && j-m>=0 && f[i+m][j-m]==mySq) {L++; m++} m1=m;
         m=1; while (i-m>=0 && j+m<Size && f[i-m][j+m]==mySq) {L++; m++} m2=m; 
-        if (L>4) { return winningMove; }
+        if (L>(limit-1)) { return winningMove; }
         side1=(i+m1<Size && j-m1>=0 && f[i+m1][j-m1]==0);
         side2=(i-m2>=0 && j+m2<Size && f[i-m2][j+m2]==0);
-        if (L==4 && (side1 || side2)) test3++;
+        if (L==(limit-1) && (side1 || side2)) test3++;
         if (side1 && side2) {
-            if (L==4) test4=1;
-            if (L==3) test3++;
+            if (L==(limit-1)) test4=1;
+            if (L==(limit-2)) test3++;
         }
 
         if (test4) return openFour;
@@ -454,6 +459,7 @@ var Gomoku = function(){
     function evaluatePos(a,mySq) {
         var maxA=-1;
         drawPos=true;
+        var limit = count2win;
         var minM,minN,maxM,maxN,A1,A2,A3,A4,m;
         for (var i=0;i<Size;i++) {
             for (var j=0;j<Size;j++) {
@@ -466,46 +472,46 @@ var Gomoku = function(){
                 var wp = winningPos(i,j,mySq);
                 if (wp>0) a[i][j]=wp;
                 else {
-                    minM=i-4; if (minM<0) minM=0;
-                    minN=j-4; if (minN<0) minN=0;
-                    maxM=i+5; if (maxM>Size) maxM=Size;
-                    maxN=j+5; if (maxN>Size) maxN=Size;
+                    minM=i-(limit-1); if (minM<0) minM=0;
+                    minN=j-(limit-1); if (minN<0) minN=0;
+                    maxM=i+limit; if (maxM>Size) maxM=Size;
+                    maxN=j+limit; if (maxN>Size) maxN=Size;
 
                     nPos[1]=1; A1=0;
                     m=1; while (j+m<maxN  && f[i][j+m]!=-mySq) {nPos[1]++; A1+=w[m]*f[i][j+m]; m++}
-                    if (j+m>=Size || f[i][j+m]==-mySq) A1-=(f[i][j+m-1]==mySq)?(w[5]*mySq):0;
+                    if (j+m>=Size || f[i][j+m]==-mySq) A1-=(f[i][j+m-1]==mySq)?(w[limit]*mySq):0;
                     m=1; while (j-m>=minN && f[i][j-m]!=-mySq) {nPos[1]++; A1+=w[m]*f[i][j-m]; m++}   
-                    if (j-m<0 || f[i][j-m]==-mySq) A1-=(f[i][j-m+1]==mySq)?(w[5]*mySq):0;
-                    if (nPos[1]>4) drawPos=false;
+                    if (j-m<0 || f[i][j-m]==-mySq) A1-=(f[i][j-m+1]==mySq)?(w[limit]*mySq):0;
+                    if (nPos[1]>(limit-1)) drawPos=false;
 
                     nPos[2]=1; A2=0;
                     m=1; while (i+m<maxM  && f[i+m][j]!=-mySq) {nPos[2]++; A2+=w[m]*f[i+m][j]; m++}
-                    if (i+m>=Size || f[i+m][j]==-mySq) A2-=(f[i+m-1][j]==mySq)?(w[5]*mySq):0;
+                    if (i+m>=Size || f[i+m][j]==-mySq) A2-=(f[i+m-1][j]==mySq)?(w[limit]*mySq):0;
                     m=1; while (i-m>=minM && f[i-m][j]!=-mySq) {nPos[2]++; A2+=w[m]*f[i-m][j]; m++}   
-                    if (i-m<0 || f[i-m][j]==-mySq) A2-=(f[i-m+1][j]==mySq)?(w[5]*mySq):0; 
-                    if (nPos[2]>4) drawPos=false;
+                    if (i-m<0 || f[i-m][j]==-mySq) A2-=(f[i-m+1][j]==mySq)?(w[limit]*mySq):0; 
+                    if (nPos[2]>(limit-1)) drawPos=false;
 
                     nPos[3]=1; A3=0;
                     m=1; while (i+m<maxM  && j+m<maxN  && f[i+m][j+m]!=-mySq) {nPos[3]++; A3+=w[m]*f[i+m][j+m]; m++}
-                    if (i+m>=Size || j+m>=Size || f[i+m][j+m]==-mySq) A3-=(f[i+m-1][j+m-1]==mySq)?(w[5]*mySq):0;
+                    if (i+m>=Size || j+m>=Size || f[i+m][j+m]==-mySq) A3-=(f[i+m-1][j+m-1]==mySq)?(w[limit]*mySq):0;
                     m=1; while (i-m>=minM && j-m>=minN && f[i-m][j-m]!=-mySq) {nPos[3]++; A3+=w[m]*f[i-m][j-m]; m++}   
-                    if (i-m<0 || j-m<0 || f[i-m][j-m]==-mySq) A3-=(f[i-m+1][j-m+1]==mySq)?(w[5]*mySq):0; 
-                    if (nPos[3]>4) drawPos=false;
+                    if (i-m<0 || j-m<0 || f[i-m][j-m]==-mySq) A3-=(f[i-m+1][j-m+1]==mySq)?(w[limit]*mySq):0; 
+                    if (nPos[3]>(limit-1)) drawPos=false;
 
                     nPos[4]=1; A4=0;
                     m=1; while (i+m<maxM  && j-m>=minN && f[i+m][j-m]!=-mySq) {nPos[4]++; A4+=w[m]*f[i+m][j-m]; m++;}
-                    if (i+m>=Size || j-m<0 || f[i+m][j-m]==-mySq) A4-=(f[i+m-1][j-m+1]==mySq)?(w[5]*mySq):0;
+                    if (i+m>=Size || j-m<0 || f[i+m][j-m]==-mySq) A4-=(f[i+m-1][j-m+1]==mySq)?(w[limit]*mySq):0;
                     m=1; while (i-m>=minM && j+m<maxN  && f[i-m][j+m]!=-mySq) {nPos[4]++; A4+=w[m]*f[i-m][j+m]; m++;} 
-                    if (i-m<0 || j+m>=Size || f[i-m][j+m]==-mySq) A4-=(f[i-m+1][j+m-1]==mySq)?(w[5]*mySq):0;
-                    if (nPos[4]>4) drawPos=false;
+                    if (i-m<0 || j+m>=Size || f[i-m][j+m]==-mySq) A4-=(f[i-m+1][j+m-1]==mySq)?(w[limit]*mySq):0;
+                    if (nPos[4]>(limit-1)) drawPos=false;
 
-                    dirA[1] = (nPos[1]>4) ? A1*A1 : 0;
-                    dirA[2] = (nPos[2]>4) ? A2*A2 : 0;
-                    dirA[3] = (nPos[3]>4) ? A3*A3 : 0;
-                    dirA[4] = (nPos[4]>4) ? A4*A4 : 0;
+                    dirA[1] = (nPos[1]>(limit-1)) ? A1*A1 : 0;
+                    dirA[2] = (nPos[2]>(limit-1)) ? A2*A2 : 0;
+                    dirA[3] = (nPos[3]>(limit-1)) ? A3*A3 : 0;
+                    dirA[4] = (nPos[4]>(limit-1)) ? A4*A4 : 0;
 
                     A1=0; A2=0;
-                    for (var k=1;k<5;k++) {
+                    for (var k=1;k<limit;k++) {
                         if (dirA[k]>=A1) {A2=A1; A1=dirA[k]}
                     }
                     a[i][j]=A1+A2;
